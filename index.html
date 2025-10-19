@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9Q Sigilizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            background-color: #f9f9f9; /* Light gray background for the page */
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            background-color: white; /* Explicit white background for canvas */
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>9Q Sigilizer</h1>
+    <p><align="center">Enter a word or phrase to generate a sigil based on 35 alphanumeric characters (1-9, A-Z) arranged in a circle.<br>Use '-' to break the line into separate segments.</p>
+    <div>
+        <input type="text" id="inputText" placeholder="Enter word or phrase">
+        <button onclick="generateSigil()">Generate Sigil</button>
+    </div>
+    <canvas id="sigilCanvas" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('sigilCanvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 150;
+        const characters = ['Z','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y'];
+
+        // Function to draw the circle and labels
+        function drawCircle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#eee';
+            ctx.stroke();
+
+            characters.forEach((char, i) => {
+                const angle = (i * (10+2/7) * Math.PI) / 180; // 10 degrees per character, in radians
+                const x = centerX + radius * Math.sin(angle);
+                const y = centerY - radius * Math.cos(angle);
+                ctx.fillStyle = 'black';
+                ctx.font = '18px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(char, x, y);
+            });
+        }
+
+        // Function to generate the sigil
+        function generateSigil() {
+            drawCircle();
+            const input = document.getElementById('inputText').value.toUpperCase();
+            const filtered = input.replace(/[^1-9A-Z-]/g, ''); // Keep alphanumeric and -
+            const segments = filtered.split('-'); // Split into segments by -
+
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+
+            segments.forEach(segment => {
+                if (segment.length === 0) return; // Skip empty segments
+                ctx.beginPath();
+                let hasPoints = false;
+                segment.split('').forEach((char, index) => {
+                    const i = characters.indexOf(char);
+                    if (i !== -1) {
+                        const angle = (i * (10+2/7) * Math.PI) / 180;
+                        const x = centerX + radius * Math.sin(angle);
+                        const y = centerY - radius * Math.cos(angle);
+                        if (!hasPoints) {
+                            ctx.moveTo(x, y);
+                            hasPoints = true;
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                });
+                if (hasPoints) {
+                    ctx.stroke();
+                }
+            });
+        }
+
+        // Initial draw
+        drawCircle();
+    </script>
+</body>
+</html>
