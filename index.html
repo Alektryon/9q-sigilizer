@@ -68,6 +68,10 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(char, x, y);
+                if (char === 'Z') {
+                    // Add '0' one line above 'Z', centered horizontally
+                    ctx.fillText('0', x, y - 21);
+                }
             });
         }
 
@@ -110,3 +114,4 @@
     </script>
 </body>
 </html>
+
