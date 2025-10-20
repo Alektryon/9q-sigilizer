@@ -41,12 +41,19 @@
     <canvas id="sigilCanvas" width="400" height="400"></canvas>
 
     <script>
+        const inputText = document.getElementById('inputText');
         const canvas = document.getElementById('sigilCanvas');
         const ctx = canvas.getContext('2d');
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         const radius = 150;
         const characters = ['Z','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y'];
+
+        inputText.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                generateSigil();
+            }
+        });
 
         // Function to draw the circle and labels
         function drawCircle() {
@@ -71,8 +78,7 @@
                 if (char === 'Z') {
                     // Add '0' one line above 'Z', centered horizontally
                     ctx.fillText('0', x, y - 21);
-                }
-            });
+                }            });
         }
 
         // Function to generate the sigil
@@ -114,4 +120,3 @@
     </script>
 </body>
 </html>
-
